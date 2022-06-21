@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +14,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = "https://localhost:44310/";
-        options.Audience = "skoruba_api";
+        options.Audience = "skoruba_api"; // Api resource
 
-        options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidTypes = new[] { "at+jwt" },
+            ValidateIssuer = true,
+            ValidateAudience = false,
+        };
     });
 
 var app = builder.Build();
